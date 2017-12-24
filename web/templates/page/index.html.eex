@@ -1,16 +1,16 @@
 <div class="row">
   <div class="col-md-12 alert alert-info">
-    Hello, <span id="User"><%= @conn.params["user"] %></span>!
+    こんにちは、 <span id="User"><%= @conn.params["user"] %></span>さん!
   </div>
   <div class="col-md-8">
-    <h2>Messages</h2>
-    <ul id="MessageList" class="list-unstyled" style="height: 300px; border: 1px solid #ccc; overflow-y: auto; padding: 20px"></ul>
-    <input type="text" id="NewMessage" placeholder="Type and press enter..." class="form-control">
+    <h2>メッセージ</h2>
+    <ul id="msg_list" class="list-unstyled" style="height: 300px; border: 1px solid #ccc; overflow-y: auto; padding: 20px"></ul>
+    <input type="text" id="new_msg" placeholder="Type and press enter..." class="form-control">
   </div>
   <div  class="col-md-4">
-    <h2>Who’s Online</h2>
-    <ul id="UserList" class="list-unstyled">
-      <li>Loading online users...</li>
+    <h3>オンラインのユーザー</h3>
+    <ul id="user_list" class="list-unstyled">
+      <li>ロード中...</li>
     </ul>
   </div>
 </div>

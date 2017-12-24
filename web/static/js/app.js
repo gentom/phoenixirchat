@@ -1,22 +1,4 @@
-// Brunch automatically concatenates all files in your
-// watched paths. Those paths can be configured at
-// config.paths.watched in "brunch-config.js".
-//
-// However, those files will only be executed if
-// explicitly imported. The only exception are files
-// in vendor, which are never wrapped in imports and
-// therefore are always executed.
-
-// Import dependencies
-//
-// If you no longer want to use a dependency, remember
-// to also remove its path from "config.paths.watched".
 import "phoenix_html"
-
-// Import local files
-//
-// Local files can be imported directly using relative
-// paths "./socket" or full ones "web/static/js/socket".
 
 // import socket from "./socket"
 import {Socket, Presence} from "phoenix"
@@ -29,10 +11,12 @@ socket.connect()
 // Presence
 let presences = {}
 
+// サーバーが生成したタイムスタンプを人間が読める形式に変換している
 let formatTimestamp = (timestamp) => {
   let date = new Date(timestamp)
   return date.toLocaleTimeString()
 }
+// ユーザー名とルームに入室した時間を返す
 let listBy = (user, {metas: metas}) => {
   return {
     user: user,
@@ -40,13 +24,15 @@ let listBy = (user, {metas: metas}) => {
   }
 }
 
-let userList = document.getElementById("UserList")
+let userList = document.getElementById("user_list")
+// 全てのオンラインユーザーを表示する
+// ユーザーが入退室する度に呼ばれる
 let render = (presences) => {
   userList.innerHTML = Presence.list(presences, listBy)
     .map(presence => `
       <li>
         <b>${presence.user}</b>
-        <br><small>online since ${presence.onlineAt}</small>
+        <br><small>${presence.onlineAt}からオンライン</small>
       </li>
     `)
     .join("")
@@ -67,24 +53,26 @@ room.on("presence_diff", diff => {
 room.join()
 
 // Chat
-let messageInput = document.getElementById("NewMessage")
-messageInput.addEventListener("keypress", (e) => {
-  if (e.keyCode == 13 && messageInput.value != "") {
-    room.push("message:new", messageInput.value)
-    messageInput.value = ""
+// e.keyCode == 13 はEnterKey
+// ユーザーの入力があり、EnterKeyが押下された際に送信する
+let msgInput = document.getElementById("new_msg")
+msgInput.addEventListener("keypress", (e) => {
+  if (e.keyCode == 13 && msgInput.value != "") {
+    room.push("message:new", msgInput.value)
+    msgInput.value = ""
   }
 })
 
-let messageList = document.getElementById("MessageList")
-let renderMessage = (message) => {
-  let messageElement = document.createElement("li")
-  messageElement.innerHTML = `
+let msgList = document.getElementById("msg_list")
+let renderMsg = (message) => {
+  let msgElement = document.createElement("li")
+  msgElement.innerHTML = `
     <b>${message.user}</b>
     <i>${formatTimestamp(message.timestamp)}</i>
     <p>${message.body}</p>
   `
-  messageList.appendChild(messageElement)
-  messageList.scrollTop = messageList.scrollHeight;
+  msgList.appendChild(msgElement)
+  msgList.scrollTop = msgList.scrollHeight;
 }
 
-room.on("message:new", message => renderMessage(message))
+room.on("message:new", message => renderMsg(message))
